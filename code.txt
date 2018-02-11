@@ -1,0 +1,416 @@
+module code(
+    input CLK,
+    input way1,way2,way3,way4,
+    input ticket11,ticket21,ticket31,ticket41,
+    input reset,
+    input ticket12,ticket22,ticket32,ticket42,
+    output a,b,c,d,e,f,g,
+    output reg active1,reg active2,reg active3,reg active4,
+    output reg success1,reg success2,reg success3,reg success4,
+    output reg avail2,reg avail3,reg avail4,
+    output reg avail1 
+ 
+    );
+    reg k1,k2,k3,k4,avail1,temp;
+    reg [4:0]selected1;
+    reg [4:0]selected2;
+    reg [4:0]selected3;
+    reg [4:0]selected4;
+    wire A,B,C,D;
+    reg [3:0] totaltickets;
+    reg [32:0] counter;
+    reg [4:0] timer1;
+    reg [4:0] timer2;
+    reg [4:0] timer3;
+    reg [4:0] timer4;
+    initial counter=0;
+    initial totaltickets=4'd15;
+    initial timer1=0;
+    initial timer2=0;
+    initial timer3=0;
+    initial timer4=0;
+    
+    initial k1=0;
+    initial k2=0;
+    initial k3=0;
+    initial k4=0;
+    
+    initial success1=0;
+    initial avail1=0;
+    initial active1=0;
+    
+    initial active2=0;
+    initial success2=0;
+    initial avail2=0;
+    
+    initial active3=0;
+    initial success3=0;
+    initial avail3=0;
+        
+    initial active4=0;
+    initial success4=0;
+    initial avail4=0;
+    
+    always @ (posedge CLK)
+    begin
+        if(counter==32'd125000000)
+        begin
+                counter=0;
+                if(reset==1)
+                begin
+                k1=0;
+                active1=0;
+                success1=0;
+                avail1=0;
+                
+                k2=0;
+                active2=0;
+                success2=0;
+                avail2=0;
+                                
+                k3=0;
+                active3=0;
+                success3=0;
+                avail3=0;
+                                                
+                k4=0;
+                active4=0;
+                success4=0;
+                avail4=0;
+                
+                totaltickets=4'd15;
+                end
+                // FIRST USER CODE BEGINS
+                if(way1==1)
+                    begin
+                       k1=~k1;  
+                    end
+                   active1=k1;
+                
+                if(active1==1)
+                begin
+                    if(timer1==5'd16)
+                        begin
+                            k1=0;
+                            active1=0;
+                            timer1=0;
+                            avail1=0;
+                            success1=0;
+                        end
+                    else
+                    begin
+                        if(ticket11==0 && ticket12==0)
+                                begin
+                                    selected1=4'd0;
+                                end
+                        if(ticket11==0 && ticket12==1)
+                                begin
+                                    selected1=4'd1;
+                                end
+                        if(ticket11==1 && ticket12==0)
+                                begin
+                                    selected1=4'd2;
+                                end
+                        if(ticket11==1 && ticket12==1)
+                                begin
+                                    selected1=4'd3;
+                                end
+                        if(totaltickets>=selected1 && selected1!=4'd0)
+                        begin
+                              avail1=1;
+                        end
+                        else
+                        begin
+                            avail1=0;
+                        end
+                        if(way1==1 && k1==1) // user entered website
+                        begin
+                            timer1=0;
+                            timer1<=timer1+1;
+                            success1=0;
+                        end
+                        if(way1==0 && k1==1)
+                        begin
+                            timer1<=timer1+1;
+                        end
+                     end 
+                end
+                if(way1==1 && k1==0) //payment
+                      begin
+                                
+                                if(avail1==1)
+                                begin
+                                    success1=1;
+                                    avail1=0;
+                                    totaltickets=totaltickets-selected1;
+                                    temp=totaltickets;
+                                    if(temp<selected2)
+                                    begin
+                                       avail2=0;
+                                    end                                                
+                                    if(temp<selected3)
+                                    begin
+                                        avail3=0;
+                                    end
+                                    if(temp<selected4)
+                                    begin
+                                        avail4=0;
+                                    end
+                                end
+                                else
+                                begin
+                                    avail1=0;
+                                end
+                     end
+                  // FIRST USER CODE ENDS
+                  
+                  // SECOND USER CODE BEGINS
+                    if(way2==1)
+                                         begin
+                                            k2=~k2;  
+                                         end
+                                        active2=k2;
+                                     
+                                     if(active2==1)
+                                     begin
+                                         if(timer2==5'd16)
+                                             begin
+                                                 k2=0;
+                                                 active2=0;
+                                                 timer2=0;
+                                                 avail2=0;
+                                                 success2=0;
+                                             end
+                                         else
+                                         begin
+                                             if(ticket21==0 && ticket22==0)
+                                                     begin
+                                                         selected2=4'd0;
+                                                     end
+                                             if(ticket21==0 && ticket22==1)
+                                                     begin
+                                                         selected2=4'd1;
+                                                     end
+                                             if(ticket21==1 && ticket22==0)
+                                                     begin
+                                                         selected2=4'd2;
+                                                     end
+                                             if(ticket21==1 && ticket22==1)
+                                                     begin
+                                                         selected2=4'd3;
+                                                     end
+                                             if(totaltickets>=selected2 && selected2!=4'd0)
+                                             begin
+                                                   avail2=1;
+                                             end
+                                             else
+                                             begin
+                                                 avail2=0;
+                                             end
+                                             if(way2==1 && k2==1) // user entered website
+                                             begin
+                                                 timer2=0;
+                                                 timer2<=timer2+1;
+                                                 success2=0;
+                                             end
+                                             if(way2==0 && k2==1)
+                                             begin
+                                                 timer2<=timer2+1;
+                                             end
+                                          end 
+                                     end
+                                     if(way2==1 && k2==0) //payment
+                                           begin
+                                                     
+                                                     if(avail2==1)
+                                                     begin
+                                                         success2=1;
+                                                         avail2=0;
+                                                         totaltickets=totaltickets-selected2;
+                                                         temp=totaltickets;                                                         
+                                                         if(temp<selected3)
+                                                         begin
+                                                            avail3=0;
+                                                         end
+                                                         if(temp<selected4)
+                                                         begin
+                                                            avail4=0;
+                                                         end
+                                                     end
+                                                     else
+                                                     begin
+                                                         avail2=0;
+                                                     end
+                                          end
+                                       //2 USER CODE ENDS
+                  
+                  //3 USER CODE BEGINS
+                  if(way3==1)
+                                                              begin
+                                                                 k3=~k3;  
+                                                              end
+                                                             active3=k3;
+                                                          
+                                                          if(active3==1)
+                                                          begin
+                                                              if(timer3==5'd16)
+                                                                  begin
+                                                                      k3=0;
+                                                                      active3=0;
+                                                                      timer3=0;
+                                                                      avail3=0;
+                                                                      success3=0;
+                                                                  end
+                                                              else
+                                                              begin
+                                                                  if(ticket31==0 && ticket32==0)
+                                                                          begin
+                                                                              selected3=4'd0;
+                                                                          end
+                                                                  if(ticket31==0 && ticket32==1)
+                                                                          begin
+                                                                              selected3=4'd1;
+                                                                          end
+                                                                  if(ticket31==1 && ticket32==0)
+                                                                          begin
+                                                                              selected3=4'd2;
+                                                                          end
+                                                                  if(ticket31==1 && ticket32==1)
+                                                                          begin
+                                                                              selected3=4'd3;
+                                                                          end
+                                                                  if(totaltickets>=selected3 && selected3!=4'd0)
+                                                                  begin
+                                                                        avail3=1;
+                                                                  end
+                                                                  else
+                                                                  begin
+                                                                      avail3=0;
+                                                                  end
+                                                                  if(way3==1 && k3==1) // user entered website
+                                                                  begin
+                                                                      timer3=0;
+                                                                      timer3<=timer3+1;
+                                                                      success3=0;
+                                                                  end
+                                                                  if(way3==0 && k3==1)
+                                                                  begin
+                                                                      timer3<=timer3+1;
+                                                                  end
+                                                               end 
+                                                          end
+                                                          if(way3==1 && k3==0) //payment
+                                                                begin
+                                                                          
+                                                                          if(avail3==1)
+                                                                          begin
+                                                                              success3=1;
+                                                                              avail3=0;
+                                                                              totaltickets=totaltickets-selected3;
+                                                                              temp=totaltickets;                                                                            
+                                                                              if(temp<selected4)
+                                                                              begin
+                                                                                avail4=0;
+                                                                              end
+                                                                          end
+                                                                          else
+                                                                          begin
+                                                                              avail3=0;
+                                                                          end
+                                                               end
+                                                               //3 USER CODE ENDS
+                          
+                          //4 USER CODE BEGINS
+                  if(way4==1)
+                                                                                   begin
+                                                                                      k4=~k4;  
+                                                                                   end
+                                                                                  active4=k4;
+                                                                               
+                                                                               if(active4==1)
+                                                                               begin
+                                                                                   if(timer4==5'd16)
+                                                                                       begin
+                                                                                           k4=0;
+                                                                                           active4=0;
+                                                                                           timer4=0;
+                                                                                           avail4=0;
+                                                                                           success4=0;
+                                                                                       end
+                                                                                   else
+                                                                                   begin
+                                                                                       if(ticket41==0 && ticket42==0)
+                                                                                               begin
+                                                                                                   selected4=4'd0;
+                                                                                               end
+                                                                                       if(ticket41==0 && ticket42==1)
+                                                                                               begin
+                                                                                                   selected4=4'd1;
+                                                                                               end
+                                                                                       if(ticket41==1 && ticket42==0)
+                                                                                               begin
+                                                                                                   selected4=4'd2;
+                                                                                               end
+                                                                                       if(ticket41==1 && ticket42==1)
+                                                                                               begin
+                                                                                                   selected4=4'd3;
+                                                                                               end
+                                                                                       if(totaltickets>=selected4 && selected4!=4'd0)
+                                                                                       begin
+                                                                                             avail4=1;
+                                                                                       end
+                                                                                       else
+                                                                                       begin
+                                                                                           avail4=0;
+                                                                                       end
+                                                                                       if(way4==1 && k4==1) // user entered website
+                                                                                       begin
+                                                                                           timer4=0;
+                                                                                           timer4<=timer4+1;
+                                                                                           success4=0;
+                                                                                       end
+                                                                                       if(way4==0 && k4==1)
+                                                                                       begin
+                                                                                           timer4<=timer4+1;
+                                                                                       end
+                                                                                    end 
+                                                                               end
+                                                                               if(way4==1 && k4==0) //payment
+                                                                                     begin
+                                                                                               
+                                                                                               if(avail4==1)
+                                                                                               begin
+                                                                                                   success4=1;
+                                                                                                   avail4=0;
+                                                                                                   totaltickets=totaltickets-selected4;
+                                                                                                   
+                                                                                               end
+                                                                                               else
+                                                                                               begin
+                                                                                                   avail4=0;
+                                                                                               end
+                                                                                    end
+                                                                                    //4 USER CODE ENDS
+                  
+                      
+                  
+        end
+        else
+        begin
+            counter<=counter+1;
+        end
+    end 
+    
+    assign A=totaltickets[3];
+    assign B=totaltickets[2];
+    assign C=totaltickets[1];
+    assign D=totaltickets[0];
+    
+    assign a = (~B&~D) | (~A&C ) |(B&C) |(A&~D) |(~A &B&D) |(A&~B&~C) ;
+    assign b = (~B&~D)|(~B&~C)|(~A&~C&~D)|(A&~C&D)|(~A&C&D);
+    assign c = (A&~B)|(~C&D)|(~B&~C)|(~A&D)|(~A&B);
+    assign d = (~A&~B&~D)|(~B&C&D)|(B&~C&D)|(A&~C)|(B&C&~D);
+    assign e = (~B&~D)|(A&B)|(C&~D)|(A&C);
+    assign f = (~C&~D)|(A&~B)|(B&~D)|(A&C)|(~A&B);
+    assign g = (A&~B)|(C&~D)|(A&D)|(~A&B&~C)|(~B&C);
+    endmodule
